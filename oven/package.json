@@ -1,5 +1,5 @@
 {
-  "name": "@bundl-r/oven",
+  "name": "@coff-r/oven",
   "version": "0.0.1",
   "description": "Bun bundler utility",
   "main": "dist/index.js",
@@ -24,14 +24,14 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MARKjotep/-bundl-r.git"
+    "url": "git+https://github.com/MARKjotep/-coff-r.git"
   },
   "bugs": {
-    "url": "https://github.com/MARKjotep/-bundl-r/issues"
+    "url": "https://github.com/MARKjotep/-coff-r/issues"
   },
-  "homepage": "https://github.com/MARKjotep/-bundl-r#readme",
+  "homepage": "https://github.com/MARKjotep/-coff-r#readme",
   "devDependencies": {
-    "shweet": "latest"
+    "bun": "^1.3.1"
   },
   "publishConfig": {
     "access": "public"
