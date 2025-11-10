@@ -4,7 +4,6 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
-    "baseUrl": ".",
     "outDir": "./types",
     "rootDir": "./src",
     //
