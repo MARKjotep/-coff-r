@@ -1,6 +1,7 @@
 import type { BunPlugin } from "bun";
 import { isDir, logDate } from "./@";
-import { readdirSync, rmSync, statSync, unlinkSync, watch } from "node:fs";
+import { watch } from "node:fs";
+import { readdir, rm, stat, unlink } from "node:fs/promises";
 import path from "node:path";
 
 // ---  ---------------------------------------------------------------
@@ -151,7 +152,7 @@ export class Oven {
       process.exit(0);
     });
   }
-  clear(
+  async clear(
     c: { exclude?: string[]; all?: boolean } = { exclude: [], all: false },
   ) {
     //
@@ -159,13 +160,13 @@ export class Oven {
 
     this.clearing = true;
 
-    const recurse = (_PATH: string) => {
-      const dirs = readdirSync(_PATH);
+    const recurse = async (_PATH: string) => {
+      const dirs = await readdir(_PATH);
       if (dirs.length == 0) {
-        rmSync(_PATH, { recursive: true });
+        await rm(_PATH, { recursive: true });
         return;
       }
-      dirs.forEach((ff) => {
+      for (const ff of dirs) {
         if (
           ff.startsWith(".") ||
           (!c.all && (ff.endsWith(".html") || this.exclude.includes(ff)))
@@ -173,15 +174,15 @@ export class Oven {
           return;
         }
         const _path = path.join(_PATH, ff);
-        if (statSync(_path).isDirectory()) {
-          recurse(_path);
+        if ((await stat(_path)).isDirectory()) {
+          await recurse(_path);
         } else {
-          unlinkSync(_path);
+          await unlink(_path);
         }
-      });
+      }
     };
 
-    recurse(this.out);
+    await recurse(this.out);
 
     return this;
   }

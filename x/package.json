@@ -8,15 +8,14 @@
     "dist"
   ],
   "scripts": {
-    "util": "cp -r ../../misc/util ./",
     "dirs": "for dir in ./src ./dist ./test ./util ./types; do mkdir -p $dir; done",
     "ts": "cp ../../misc/tsconfig.json ./;",
-    "init": "bun run dirs && bun run util && bun run @ && bun run ts;",
-    "build": "rm -r ./types ; tsc && bun build ./src/index.ts --outdir ./dist --minify --packages external --target bun && rollup -c ./util/rollup.config.js"
+    "init": "bun run dirs && bun run ts;"
   },
   "keywords": [
-    "css",
-    "js"
+    "js",
+    "ts",
+    "bun"
   ],
   "author": "MARKjotep",
   "license": "MIT",
@@ -30,7 +29,7 @@
   },
   "homepage": "https://github.com/MARKjotep/-coff-r#readme",
   "devDependencies": {
-    "bun": "^1.3.1"
+    "@coff-r/oven": "link:@coff-r/oven"
   },
   "publishConfig": {
     "access": "public"

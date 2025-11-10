@@ -41,7 +41,7 @@ declare class Oven {
     clear(c?: {
         exclude?: string[];
         all?: boolean;
-    }): this;
+    }): Promise<this>;
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@coff-r/oven",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Bun bundler utility",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,9 @@
     "init": "bun run dirs && bun run ts;"
   },
   "keywords": [
-    "js"
+    "js",
+    "ts",
+    "bun"
   ],
   "author": "MARKjotep",
   "license": "MIT",
@@ -26,7 +28,7 @@
     "url": "https://github.com/MARKjotep/-coff-r/issues"
   },
   "homepage": "https://github.com/MARKjotep/-coff-r#readme",
-  "devDependencies": {
+  "dependencies": {
     "rollup": "^4.53.1",
     "rollup-plugin-dts": "^6.2.3"
   },
