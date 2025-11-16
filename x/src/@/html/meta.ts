@@ -1,107 +1,140 @@
 import { oItems } from "../obj";
 import { reCamel } from "../str";
 
-const contxt = (prop: string, ctx: string) => {
-  return { name: prop, content: ctx };
-};
-const prop = (prop: string, ctx: string) => {
-  return { property: prop, content: ctx };
-};
-const equiv = (prop: string, ctx: string) => {
-  return { "http-equiv": prop, content: ctx };
-};
+// core tag shape
+export type MetaTag =
+  | { charset: string }
+  | { name: string; content: string }
+  | { property: string; content: string }
+  | { "http-equiv": string; content: string };
 
-interface metaViewport {
+// factories
+const nameTag = (name: string, content: string): MetaTag => ({ name, content });
+
+const propTag = (property: string, content: string): MetaTag => ({
+  property,
+  content,
+});
+
+const equivTag = (value: string, content: string): MetaTag => ({
+  "http-equiv": value,
+  content,
+});
+
+// fine‑grained config types
+export interface MetaViewport {
   width?: string;
   height?: string;
   initialScale?: string;
   minimumScale?: string;
   maximumScale?: string;
-  userScalable?: string;
-  interactiveWidget?: string;
+  userScalable?: "yes" | "no";
+  interactiveWidget?: "resizes-content" | "overlays-content";
 }
 
-interface httpeQuiv {
+export interface HttpEquiv {
   contentSecurityPolicy?: string;
   contentType?: string;
   defaultStyle?: string;
-  refresh?: string;
+  refresh?: string | number;
   cacheControl?: string;
   xUaCompatible?: string;
 }
 
-interface OG {
+export interface OpenGraphBase {
   title?: string;
   description?: string;
   image?: string;
   url?: string;
   type?: string;
-  card?: "summary" | "summary_large_image" | "app" | "player";
 }
 
-type meta<T> = {
-  charset?: T;
-  content?: T;
-  "http-equiv"?: T;
-  name?: T;
-  property?: T;
-  media?: T;
-  url?: T;
-};
+export type TwitterCardType =
+  | "summary"
+  | "summary_large_image"
+  | "app"
+  | "player";
 
-export class Meta {
-  metas: Record<string, string>[] = [];
+export interface TwitterMeta extends OpenGraphBase {
+  card?: TwitterCardType;
+}
+
+export class MetaBuilder {
+  public readonly tags: MetaTag[] = [];
+
   constructor(description?: string) {
-    description && this.metas.push(contxt("description", description));
+    if (description) {
+      this.tags.push(nameTag("description", description));
+    }
   }
-  author(name: string) {
-    this.meta = contxt("author", name);
-    return this;
-  }
-  charset(val: string) {
-    this.meta = { charset: val };
-    return this;
-  }
-  keywords(...keyword: string[]) {
-    this.meta = contxt("keywords", keyword.join(", "));
-    return this;
-  }
-  viewport(vport: metaViewport) {
-    const OT = oItems(vport).map(([k, v]) => [reCamel(k), String(v)].join("="));
-    this.meta = contxt("viewport", OT.join(", "));
-    return this;
-  }
-  httpEquiv(httpeQuiv: httpeQuiv) {
-    oItems(httpeQuiv).forEach(([k, v]) => {
-      this.meta = equiv(reCamel(k), String(v));
-    });
 
+  author(name: string) {
+    this.tags.push(nameTag("author", name));
     return this;
   }
-  robots(...robot: ("index" | "noindex" | "follow" | "nofollow")[]) {
-    this.meta = contxt("robots", robot.join(", "));
+
+  charset(value: string) {
+    this.tags.push({ charset: value });
     return this;
   }
+
+  keywords(...keywords: string[]) {
+    if (keywords.length > 0) {
+      this.tags.push(nameTag("keywords", keywords.join(", ")));
+    }
+    return this;
+  }
+
+  viewport(vp: MetaViewport) {
+    const parts = oItems(vp).map(([k, v]) => `${reCamel(k)}=${String(v)}`);
+    if (parts.length) {
+      this.tags.push(nameTag("viewport", parts.join(", ")));
+    }
+    return this;
+  }
+
+  httpEquiv(values: HttpEquiv) {
+    oItems(values).forEach(([k, v]) => {
+      this.tags.push(equivTag(reCamel(k), String(v)));
+    });
+    return this;
+  }
+
+  robots(...directives: ("index" | "noindex" | "follow" | "nofollow")[]) {
+    if (directives.length) {
+      this.tags.push(nameTag("robots", directives.join(", ")));
+    }
+    return this;
+  }
+
   themeColor(color: string) {
-    this.meta = contxt("theme-color", color);
+    this.tags.push(nameTag("theme-color", color));
     return this;
   }
-  openGraph(og: Omit<OG, "card">) {
+
+  openGraph(og: OpenGraphBase) {
     oItems(og).forEach(([k, v]) => {
-      this.meta = prop("og:" + k, String(v));
+      this.tags.push(propTag(`og:${k}`, String(v)));
     });
     return this;
   }
-  twitter(og: OG) {
-    oItems(og).forEach(([k, v]) => {
-      this.meta = contxt("twitter:" + k, String(v));
+
+  twitter(meta: TwitterMeta) {
+    oItems(meta).forEach(([k, v]) => {
+      // `card` and OG-ish fields map to twitter:* name tags
+      this.tags.push(nameTag(`twitter:${k}`, String(v)));
     });
     return this;
   }
-  push(metas: meta<string>[]) {
-    this.metas.unshift(...metas);
+
+  // accept any externally built tags
+  extend(tags: MetaTag[]) {
+    this.tags.push(...tags);
+    return this;
   }
-  private set meta(value: Record<string, string>) {
-    this.metas.push(value);
+
+  // expose as readonly to avoid accidental mutation
+  toArray(): readonly MetaTag[] {
+    return this.tags;
   }
 }

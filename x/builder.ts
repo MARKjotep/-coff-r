@@ -9,11 +9,12 @@ const BN = new Roll({
 
 const OV = new Oven({
   files: [".", "./bun"],
+  external: ["dotenv"],
 });
 // ---  ---------------------------------------------------------------
 
 OV.onsuccess = async () => {
-  await Cmd("tsc");
+  await Cmd("tsc -p tsconfig.build.json");
 
   await RP.output({
     file: "./dist/index.d.ts",

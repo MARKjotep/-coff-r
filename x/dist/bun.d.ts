@@ -1,9 +1,8 @@
 import { BunFile } from 'bun';
 
 declare class Envy {
-    private path;
-    private envPath?;
-    constructor(path: string, envPath?: string | undefined);
+    path: string;
+    constructor(path: string);
     init(): Promise<this>;
     secret(): string;
     tls(): Record<string, BunFile>;

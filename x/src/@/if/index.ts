@@ -1,6 +1,6 @@
-import { isNotWindow } from "../is";
+import { isNotBrowser } from "../is";
 
 export const IfClient = <T>(fn: () => T) => {
-  if (isNotWindow) return undefined;
+  if (isNotBrowser()) return null;
   return fn();
 };

@@ -1,5 +1,7 @@
-import { isArr } from "../is";
+import { isArray } from "../is";
 
-export const asArray = <X>(a: X) => (isArr(a) ? a : [a]),
-  asNumber = (a: any) => Number(a),
-  asBool = (a: any) => Boolean(a);
+export const asArray = <X>(a: X) => (isArray(a) ? a : [a]);
+
+export const asNumber = (a: any) => Number(a);
+
+export const asBool = (a: any) => Boolean(a);

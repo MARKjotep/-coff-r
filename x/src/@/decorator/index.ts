@@ -1,5 +1,5 @@
-import { oFreeze } from "../obj";
-import { isFN } from "../is";
+import { isFunction } from "../is";
+import type { Class } from "../types";
 
 /**
  * A decorator function that creates a singleton class from the provided constructor.
@@ -7,9 +7,7 @@ import { isFN } from "../is";
  * @param constructor - The constructor function of the class to be made a singleton.
  * @returns A new class that extends the provided constructor and implements the singleton pattern.
  */
-export function Singleton<T extends { new (...args: any[]): any }>(
-  constructor: T,
-) {
+export const Singleton = <T extends Class>(constructor: T) => {
   let instance: T;
   return class extends constructor {
     constructor(...args: any[]) {
@@ -17,11 +15,10 @@ export function Singleton<T extends { new (...args: any[]): any }>(
         return instance;
       }
       super(...args);
-      oFreeze(this);
       instance = this as any;
     }
   };
-}
+};
 
 /**
  * A decorator function that creates a cached class from the provided constructor.
@@ -30,9 +27,7 @@ export function Singleton<T extends { new (...args: any[]): any }>(
  * @param constructor - The constructor function of the class to be cached.
  * @returns A new class that extends the provided constructor and implements caching.
  */
-export function Cached<T extends { new (...args: any[]): any }>(
-  constructor: T,
-) {
+export const Cached = <T extends Class>(constructor: T) => {
   return class extends constructor {
     constructor(...args: any[]) {
       super(...args);
@@ -42,7 +37,7 @@ export function Cached<T extends { new (...args: any[]): any }>(
           const cacheKey = `__${property}`;
           if (!cache.has(cacheKey)) {
             let fn = target[property];
-            if (isFN(fn)) {
+            if (isFunction(fn)) {
               fn = function (...args: any[]) {
                 const methodCacheKey = `${cacheKey}_${JSON.stringify(args)}`;
                 if (!cache.has(methodCacheKey)) {
@@ -64,7 +59,7 @@ export function Cached<T extends { new (...args: any[]): any }>(
       });
     }
   };
-}
+};
 
 /**
  * Method decorator. Bind this to method when destructured.
@@ -94,11 +89,11 @@ export const bind = (
 };
 
 // Great for expensive calculations.
-export function memoize(
+export const memoize = (
   _t: any,
   _k: string,
   desc: PropertyDescriptor,
-): PropertyDescriptor {
+): PropertyDescriptor => {
   const fn = desc.value;
   const cache = new Map<string, any>();
   desc.value = function (...args: any[]) {
@@ -109,10 +104,10 @@ export function memoize(
     return result;
   };
   return desc;
-}
+};
 
 // Warns at runtime if someone calls the method.
-export function deprecated(message: string) {
+export const deprecated = (message: string) => {
   return function (
     _t: any,
     key: string,
@@ -125,4 +120,4 @@ export function deprecated(message: string) {
     };
     return desc;
   };
-}
+};

@@ -1,17 +1,17 @@
-import { isInt, isNumber } from "../is";
+import { isInteger, isNumber, isNumberLike } from "../is";
 
 /*
 -------------------------
 ROUTE AND STORAGE PROVIDER
 -------------------------
 */
-
 export const pathType = (
   wrd: string,
   isFinal: boolean = false,
 ): [any, string] => {
-  if (isNumber(wrd)) {
-    return [+wrd, isInt(wrd) ? "int" : "float"];
+  if (isNumberLike(wrd)) {
+    const _wrd = +wrd;
+    return [_wrd, isInteger(_wrd) ? "int" : "float"];
   }
   if (isFinal && /\.\w+$/.test(wrd)) {
     return [wrd, "file"];

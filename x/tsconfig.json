@@ -1,26 +1,25 @@
 {
   "compilerOptions": {
-    "moduleResolution": "Node",
-    "target": "ESNext",
-    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "es2024",
+    "module": "esnext",
     "lib": ["ESNext", "DOM"],
-    "outDir": "./types",
-    "rootDir": "./src",
-    //
+    "rootDir": ".",
     "strictBindCallApply": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
     "allowJs": true,
     "checkJs": false,
     "removeComments": false,
+    "noEmit": true,
+    // @decorators
     "emitDecoratorMetadata": true,
-
     "experimentalDecorators": true,
+    "useDefineForClassFields": true,
     "skipLibCheck": true,
     "composite": false,
     //
-    "declaration": true,
-    "emitDeclarationOnly": true,
+
     "allowSyntheticDefaultImports": true,
     "allowArbitraryExtensions": true,
     "alwaysStrict": true,
@@ -35,10 +34,8 @@
 
     // Modern TS hygiene:
     "verbatimModuleSyntax": true,
-
     "paths": {}
     //
   },
-  "exclude": ["./util/**", "./test/**"],
-  "include": ["./src/**/*"]
+  "exclude": ["dist"]
 }

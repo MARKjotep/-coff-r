@@ -1,5 +1,5 @@
 import { Mapper } from "../../obj";
-import { parsePath, pathType } from "../../path";
+import { parsePath, pathType } from "../../str/path";
 import { ngify, sparse } from "../../str";
 import type { obj } from "../../types";
 import { Cacher } from "../cache";
